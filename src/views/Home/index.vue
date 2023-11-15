@@ -1,6 +1,6 @@
 <template>
 	<div class="common-layout">
-		<el-container style="height: 100vh">
+		<el-container>
 			<el-header class="swpu-header" height="40px">
 				<div style="width: 326px">
 					<span>{{ user.nickname }}用户</span>
@@ -14,13 +14,13 @@
 					</el-popconfirm>
 				</div>
 			</el-header>
-			<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-				<el-menu-item index="1">首页</el-menu-item>
-				<el-menu-item index="2">首页</el-menu-item>
-				<el-menu-item index="3">首页</el-menu-item>
-				<el-menu-item index="4">首页</el-menu-item>
+			<el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal" @select="handleSelect">
+				<el-menu-item index="/home/page-view">首页</el-menu-item>
+				<el-menu-item index="/mine">我的</el-menu-item>
 			</el-menu>
-			<el-main> main </el-main>
+			<el-main>
+				<router-view></router-view>
+			</el-main>
 		</el-container>
 	</div>
 </template>
@@ -36,7 +36,7 @@ defineComponent({
 	name: 'Home',
 });
 const user = useUserStore();
-const activeIndex = ref(1);
+const activeIndex = ref('/home/page-view');
 // 退出登录
 function logout() {
 	user.logoutHandler();
@@ -48,5 +48,10 @@ function logout() {
 	display: flex;
 	justify-content: right;
 	align-items: center;
+}
+.common-layout {
+	width: 1160px;
+	margin: 0 auto;
+	height: 100vh;
 }
 </style>
