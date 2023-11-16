@@ -1,70 +1,36 @@
 <template>
 	<div class="wrapper">
 		<div class="left">
-			<div class="left-header">最新文章</div>
+			<div class="left-header" style="display: flex; align-items: center">
+				<span class="iconfont icon-zuixingengxin" style="font-size: 24px; color: #0086b3; margin-right: 10px"></span>
+				<span style="font-weight: bold">最新文章</span>
+			</div>
 			<div class="article-wrapper">
-				<div class="article-item">
+				<div v-for="item in 10" :key="item" class="article-item" @click="toDetail(item)">
 					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="url" fit="cover" />
+						<el-image style="width: 240px; height: 160px" :src="item" fit="cover" />
 					</div>
 					<div class="item-info">
-						<div class="info-author">作者</div>
-						<div class="info-time">2023-10-10 12:50:20</div>
-					</div>
-					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
-				</div>
-				<div class="article-item">
-					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="url" fit="cover" />
-					</div>
-					<div class="item-info">
-						<div class="info-author">作者</div>
-						<div class="info-time">2023-10-10 12:50:20</div>
-					</div>
-					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
-				</div>
-				<div class="article-item">
-					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="url" fit="cover" />
-					</div>
-					<div class="item-info">
-						<div class="info-author">作者</div>
-						<div class="info-time">2023-10-10 12:50:20</div>
+						<div class="info-author" style="font-weight: 900">作者</div>
+						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
 					</div>
 					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
 				</div>
 			</div>
 		</div>
 		<div class="right">
-			<div class="right-header">评分最高</div>
+			<div class="right-header" style="display: flex; align-items: center">
+				<span class="iconfont icon-icon1" style="font-size: 24px; color: #f8001d; margin-right: 10px"></span>
+				<span style="font-weight: bold">评分最高</span>
+			</div>
 			<div class="article-wrapper">
-				<div class="article-item">
+				<div v-for="item in 10" :key="item" class="article-item">
 					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="url" fit="cover" />
+						<el-image style="width: 240px; height: 160px" :src="item" fit="cover" />
 					</div>
 					<div class="item-info">
-						<div class="info-author">作者</div>
-						<div class="info-time">2023-10-10 12:50:20</div>
-					</div>
-					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
-				</div>
-				<div class="article-item">
-					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="url" fit="cover" />
-					</div>
-					<div class="item-info">
-						<div class="info-author">作者</div>
-						<div class="info-time">2023-10-10 12:50:20</div>
-					</div>
-					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
-				</div>
-				<div class="article-item">
-					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="url" fit="cover" />
-					</div>
-					<div class="item-info">
-						<div class="info-author">作者</div>
-						<div class="info-time">2023-10-10 12:50:20</div>
+						<div class="info-author" style="font-weight: 900">作者</div>
+						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
 					</div>
 					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
 				</div>
@@ -75,8 +41,19 @@
 
 <script setup lang="ts">
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 defineComponent({ name: 'PageView' });
+function toDetail(item: number) {
+	console.log(item);
+	router.push({
+		path: '/home/page-detail',
+		params: {
+			id: item,
+		},
+	});
+}
 </script>
 
 <style scoped lang="scss">
@@ -94,13 +71,15 @@ defineComponent({ name: 'PageView' });
 			justify-content: space-between;
 			align-items: center;
 			border: 1px solid #dcdcdc;
+			margin-top: 10px;
 			.article-item {
 				width: 45%;
 				padding: 10px;
 				display: flex;
 				flex-direction: column;
 				margin-bottom: 10px;
-				border-bottom: 1px solid #dcdcdc;
+				border: 1px solid #dcdcdc;
+				overflow: hidden;
 				.item-image {
 					width: 240px;
 					height: 160px;

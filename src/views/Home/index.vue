@@ -2,10 +2,8 @@
 	<div class="common-layout">
 		<el-container>
 			<el-header class="swpu-header" height="40px">
-				<div style="width: 326px">
+				<div>
 					<span>{{ user.nickname }}用户</span>
-					<el-divider direction="vertical" />
-					<span>我的消息</span>
 					<el-divider direction="vertical" />
 					<el-popconfirm title="是否确定退出登录？" @confirm="logout">
 						<template #reference>
@@ -14,9 +12,9 @@
 					</el-popconfirm>
 				</div>
 			</el-header>
-			<el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal" @select="handleSelect">
+			<el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal">
 				<el-menu-item index="/home/page-view">首页</el-menu-item>
-				<el-menu-item index="/mine">我的</el-menu-item>
+				<el-menu-item index="/home/mine">我的</el-menu-item>
 			</el-menu>
 			<el-main>
 				<router-view></router-view>
@@ -28,15 +26,18 @@
 <script setup lang="ts">
 import { defineComponent, ref } from 'vue';
 import useUserStore from '@/store/modules/user.ts';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 
 defineComponent({
 	name: 'Home',
 });
 const user = useUserStore();
+// 保持刷新菜单选项不变
 const activeIndex = ref('/home/page-view');
+activeIndex.value = route.fullPath;
 // 退出登录
 function logout() {
 	user.logoutHandler();

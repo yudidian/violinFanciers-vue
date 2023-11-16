@@ -7,11 +7,6 @@ const routes: Array<RouteRecordRaw> = [
 		component: () => import('@/views/Login/index.vue'),
 	},
 	{
-		path: '/mine',
-		name: 'Mine',
-		component: () => import('@/views/Mine/index.vue'),
-	},
-	{
 		path: '/',
 		redirect: '/home/page-view',
 	},
@@ -29,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
 				path: 'page-detail',
 				name: 'PageDetail',
 				component: () => import('@/components/PageDetail/index.vue'),
+			},
+			{
+				path: 'mine',
+				name: 'Mine',
+				component: () => import('@/views/Mine/index.vue'),
 			},
 		],
 	},

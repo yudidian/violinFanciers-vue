@@ -6,6 +6,7 @@ import App from './App.vue';
 import router from './router/router.ts';
 // 引入pinia并实例化
 import pinia from './store/store.ts';
+import '@/assets/font/iconfont.css';
 
 const app = createApp(App);
 app.use(router);

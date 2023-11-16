@@ -1,0 +1,37 @@
+{
+  "id": "4333549",
+  "name": "violinFanciers-vue",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "783452",
+      "name": "积分",
+      "font_class": "icon",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "988620",
+      "name": "热度",
+      "font_class": "icon1",
+      "unicode": "e68e",
+      "unicode_decimal": 59022
+    },
+    {
+      "icon_id": "6561003",
+      "name": "最新更新",
+      "font_class": "zuixingengxin",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "20313974",
+      "name": "数量",
+      "font_class": "shuliang",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    }
+  ]
+}
