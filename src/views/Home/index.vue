@@ -5,19 +5,19 @@
 				<div style="display: flex; align-items: center">
 					<span>{{ user.nickname }}用户</span>
 					<el-divider direction="vertical" />
-					<el-popconfirm title="是否确定退出登录？" @confirm="logout">
+					<el-popconfirm title="Are you sure to log out？" @confirm="logout">
 						<template #reference>
 							<div style="display: flex; align-items: center">
 								<el-icon style="color: red; margin-right: 2px; margin-top: 1px"><SwitchButton /></el-icon>
-								<span style="cursor: pointer">退出登录</span>
+								<span style="cursor: pointer">Log Out</span>
 							</div>
 						</template>
 					</el-popconfirm>
 				</div>
 			</el-header>
 			<el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal">
-				<el-menu-item index="/home/page-view">首页</el-menu-item>
-				<el-menu-item index="/home/mine">我的</el-menu-item>
+				<el-menu-item index="/home/page-view">Home</el-menu-item>
+				<el-menu-item index="/home/mine">Mine</el-menu-item>
 			</el-menu>
 			<el-main>
 				<router-view></router-view>

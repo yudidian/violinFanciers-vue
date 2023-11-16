@@ -8,13 +8,15 @@
 				<span>用户名</span>
 			</div>
 			<div class="other-info">
-				<div><span class="iconfont icon-icon" style="margin-right: 10px"></span>积分：<span style="color: red; margin-right: 20px">45</span></div>
-				<div><span class="iconfont icon-shuliang" style="margin-right: 10px"></span>发表文章数量：<span style="color: red">45</span></div>
+				<div><span class="iconfont icon-icon" style="margin-right: 10px"></span>Integral：<span style="color: red; margin-right: 20px">45</span></div>
+				<div>
+					<span class="iconfont icon-shuliang" style="margin-right: 10px"></span>Number of published articles：<span style="color: red">45</span>
+				</div>
 			</div>
 		</header>
 		<main>
 			<el-tabs v-model="activeName" class="demo-tabs" @tabChange="tabChange">
-				<el-tab-pane label="喜欢列表" name="1">
+				<el-tab-pane label="Like List" name="1">
 					<div class="collection-list">
 						<div class="list-item">
 							<div class="left">
@@ -22,12 +24,12 @@
 							</div>
 							<div class="title">xxxxxxxG</div>
 							<div class="opt">
-								<el-button type="danger" :icon="Star" @click="cancelCollection">取消</el-button>
+								<el-button type="danger" :icon="Star" @click="cancelCollection">Cancel</el-button>
 							</div>
 						</div>
 					</div>
 				</el-tab-pane>
-				<el-tab-pane label="隐藏列表" name="2">
+				<el-tab-pane label="Hidden List" name="2">
 					<div class="collection-list">
 						<div class="list-item">
 							<div class="left">
@@ -35,12 +37,12 @@
 							</div>
 							<div class="title">xxxxxxxG</div>
 							<div class="opt">
-								<el-button type="danger" :icon="View" @click="cancelHide">取消</el-button>
+								<el-button type="danger" :icon="View" @click="cancelHide">Hide</el-button>
 							</div>
 						</div>
 					</div>
 				</el-tab-pane>
-				<el-tab-pane label="发布列表" name="3">
+				<el-tab-pane label="Personal creation" name="3">
 					<div class="my-list" style="width: 100%; padding: 10px 0; height: 30px">
 						<el-button type="primary" style="margin-left: auto; display: block" :icon="Edit" @click="addNewArticle = true"></el-button>
 					</div>
@@ -51,19 +53,19 @@
 							</div>
 							<div class="title">xxxxxxxG</div>
 							<div class="opt">
-								<el-button type="danger" :icon="Delete" @click="cancelHide">删除</el-button>
+								<el-button type="danger" :icon="Delete" @click="cancelHide">Delete</el-button>
 							</div>
 						</div>
 					</div>
 				</el-tab-pane>
 			</el-tabs>
 		</main>
-		<el-dialog v-model="addNewArticle" :close-on-click-modal="false" :destroy-on-close="true" title="新增文章" width="560px">
+		<el-dialog v-model="addNewArticle" :close-on-click-modal="false" :destroy-on-close="true" title="New article" width="560px">
 			<el-form ref="ruleFormRef" label-position="top" label-width="100px" :model="formData" style="max-width: 460px; margin: 0 auto" :rules="rules">
-				<el-form-item label="文章标题" prop="title">
-					<el-input v-model="formData.title" />
+				<el-form-item label="Article title" prop="title">
+					<el-input v-model="formData.title" placeholder="Please enter the title of your article" />
 				</el-form-item>
-				<el-form-item label="图片" prop="image">
+				<el-form-item label="Image" prop="image">
 					<el-upload
 						class="avatar-uploader"
 						action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
@@ -75,20 +77,20 @@
 						<el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
 					</el-upload>
 				</el-form-item>
-				<el-form-item label="文章内容" prop="message">
+				<el-form-item label="Article content" prop="message">
 					<el-input
 						v-model="formData.message"
 						:autosize="{ minRows: 8, maxRows: 16 }"
 						type="textarea"
 						maxlength="800"
-						placeholder="请输入文章内容"
+						placeholder="Please enter the content of the article"
 						show-word-limit
 					/>
 				</el-form-item>
 				<el-form-item>
 					<div style="margin-left: auto; margin-top: 10px">
-						<el-button type="primary" @click="addNewArticleHandler">确定</el-button>
-						<el-button @click="addNewArticle = false">取消</el-button>
+						<el-button type="primary" @click="addNewArticleHandler">Confirm</el-button>
+						<el-button @click="addNewArticle = false">Cancel</el-button>
 					</div>
 				</el-form-item>
 			</el-form>
@@ -118,13 +120,12 @@ const formData = ref({
 });
 const rules = reactive<FormRules<RuleForm>>({
 	title: [
-		{ required: true, message: 'Please input Activity name', trigger: 'blur' },
-		{ min: 3, max: 30, message: 'Length should be 3 to 5', trigger: 'blur' },
+		{ required: true, message: 'Article title is required', trigger: 'blur' },
+		{ min: 3, max: 30, message: 'Length should be 3 to 30', trigger: 'blur' },
 	],
-	image: [{ required: true, message: 'Please input Activity name', trigger: 'blur' }],
 	message: [
-		{ required: true, message: 'Please input Activity name', trigger: 'blur' },
-		{ max: 800, message: 'Length should be 3 to 5', trigger: 'blur' },
+		{ required: true, message: 'Article content is required', trigger: 'blur' },
+		{ max: 800, message: 'The maximum length of the article content is 800.', trigger: 'blur' },
 	],
 });
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {

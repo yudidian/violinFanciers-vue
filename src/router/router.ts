@@ -11,6 +11,15 @@ const routes: Array<RouteRecordRaw> = [
 		redirect: '/home/page-view',
 	},
 	{
+		path: '/:pathMatch(.*)',
+		redirect: '/404',
+	},
+	{
+		path: '/404',
+		name: '404',
+		component: () => import('@/views/404/index.vue'),
+	},
+	{
 		path: '/home',
 		name: 'Home',
 		component: () => import('@/views/Home/index.vue'),
@@ -40,4 +49,19 @@ const router = createRouter({
 	routes,
 });
 
+// const noPermission = ['Login', 'PageView'];
+// // 全局守卫：登录拦截 本地没有存token,请重新登录
+// router.beforeEach((to, from, next) => {
+// 	console.log(to);
+// 	// 判断有没有登录
+// 	if (!localStorage.getItem('token')) {
+// 		if (noPermission.includes(to.name as string)) {
+// 			next();
+// 		} else {
+// 			router.replace('/login');
+// 		}
+// 	} else {
+// 		next();
+// 	}
+// });
 export default router;

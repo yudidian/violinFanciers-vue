@@ -3,7 +3,7 @@
 		<div class="left">
 			<div class="left-header" style="display: flex; align-items: center">
 				<span class="iconfont icon-zuixingengxin" style="font-size: 24px; color: #0086b3; margin-right: 10px"></span>
-				<span style="font-weight: bold">最新文章</span>
+				<span style="font-weight: bold">Latest Share</span>
 			</div>
 			<div class="article-wrapper">
 				<div v-for="item in 10" :key="item" class="article-item" @click="toDetail(item)">
@@ -21,7 +21,7 @@
 		<div class="right">
 			<div class="right-header" style="display: flex; align-items: center">
 				<span class="iconfont icon-icon1" style="font-size: 24px; color: #f8001d; margin-right: 10px"></span>
-				<span style="font-weight: bold">评分最高</span>
+				<span style="font-weight: bold">Highest Rated</span>
 			</div>
 			<div class="article-wrapper">
 				<div v-for="item in 10" :key="item" class="article-item">
@@ -89,6 +89,7 @@ function toDetail(item: number) {
 					padding: 10px;
 					justify-content: space-between;
 					.info-author {
+						width: 62px;
 						@include show_line(1);
 					}
 				}

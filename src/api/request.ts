@@ -51,7 +51,7 @@ class RequestHttp {
 					// })
 				}
 				const token = localStorage.getItem('token'); // 保存token到localStorage中
-				if (token && config.url !== '/api/uaa/oauth/token') {
+				if (token) {
 					(config as any).headers.Authorization = 'Bearer ' + token; // 携带请求头
 				}
 				return config;
@@ -94,7 +94,7 @@ class RequestHttp {
 					this.handleCode(response.status);
 				}
 				if (!window.navigator.onLine) {
-					ElMessage.error('网络连接失败');
+					ElMessage.error('Network connection failed');
 					// 可以跳转到错误页面，也可以不做操作
 					// return router.replace({
 					//   path: '/404'
@@ -108,16 +108,16 @@ class RequestHttp {
 		switch (code) {
 			case 401:
 				// userStore.resetToken()
-				ElMessage.error('登录失败，请重新登录' + code);
-				router.push({ name: 'login' });
+				ElMessage.error('Login failed, please log in again.' + code);
+				router.push({ name: 'Login' });
 				break;
 			case 500:
 				// userStore.resetToken()
-				ElMessage.error('请求失败' + code);
-				router.push({ name: 'login' });
+				ElMessage.error('Request failed' + code);
+				router.push({ name: 'Login' });
 				break;
 			default:
-				ElMessage.error('请求失败');
+				ElMessage.error('Request failed');
 				break;
 		}
 	}

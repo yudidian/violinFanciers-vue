@@ -4,7 +4,7 @@
 			<div class="title">怎么选一根好的小提琴弓</div>
 			<div class="info-content">
 				<span class="info-time">2023-10-19 10:01 | </span>
-				<span class="info-author">原作者: 电子小提琴</span>
+				<span class="info-author">original author: 电子小提琴</span>
 			</div>
 		</div>
 		<div class="message">
@@ -27,7 +27,7 @@
 		<div class="button-wrapper">
 			<div class="return">
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Back /></el-icon>
-				<span style="margin-right: 10px">返回</span>
+				<span style="margin-right: 10px">Back</span>
 			</div>
 			<div class="support">
 				<span class="iconfont icon-zhichi" style="font-size: 24px; margin-top: 1px"></span>
@@ -38,7 +38,7 @@
 				<span style="margin-left: 10px">20</span>
 			</div>
 			<div class="hide">
-				<span>隐藏:</span>
+				<span>Hide:</span>
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Hide /></el-icon>
 			</div>
 		</div>
@@ -47,10 +47,9 @@
 
 <script setup lang="ts">
 import { defineComponent, ref } from 'vue';
-import { StarFilled, Hide, Star, Back } from '@element-plus/icons-vue';
+import { Hide, Back } from '@element-plus/icons-vue';
 
 defineComponent({ name: 'PageDetail' });
-const startValue = ref(0);
 </script>
 
 <style scoped lang="scss">
