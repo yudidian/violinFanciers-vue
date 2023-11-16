@@ -29,18 +29,17 @@
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Back /></el-icon>
 				<span style="margin-right: 10px">返回</span>
 			</div>
-			<div class="start">
-				<span style="margin-right: 10px">评分:</span>
-				<el-rate v-model="startValue" style="font-size: 28px" allow-half size="large" />
+			<div class="support">
+				<span class="iconfont icon-zhichi" style="font-size: 24px; margin-top: 1px"></span>
+				<span style="margin-left: 10px">20</span>
 			</div>
-			<div class="dislike">
+			<div class="oppose">
+				<span class="iconfont icon-buzhichi" style="font-size: 24px; margin-top: 1px"></span>
+				<span style="margin-left: 10px">20</span>
+			</div>
+			<div class="hide">
 				<span>隐藏:</span>
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Hide /></el-icon>
-			</div>
-			<div class="collection">
-				<span>收藏:</span>
-				<el-icon style="font-size: 40px; margin-left: 10px; color: #fff102; cursor: pointer"><StarFilled /></el-icon>
-				<el-icon style="font-size: 36px; margin-left: 10px; color: #fff102; cursor: pointer"><Star /></el-icon>
 			</div>
 		</div>
 	</div>
@@ -96,24 +95,21 @@ const startValue = ref(0);
 		height: 60px;
 		align-items: center;
 		justify-content: right;
-		.start,
-		.dislike,
+		.support,
+		.oppose,
+		.hide,
 		.return,
 		.collection {
 			margin-right: 20px;
 			display: flex;
 			align-items: center;
+			cursor: pointer;
 			span {
 				font-size: 20px;
 			}
 		}
 		.return {
 			margin-right: auto;
-		}
-		.start {
-			:deep(.el-rate__icon) {
-				font-size: 36px;
-			}
 		}
 	}
 }

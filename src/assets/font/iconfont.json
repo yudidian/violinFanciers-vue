@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3091954",
+      "name": "支持",
+      "font_class": "zhichi",
+      "unicode": "e76a",
+      "unicode_decimal": 59242
+    },
+    {
+      "icon_id": "3091960",
+      "name": "不支持",
+      "font_class": "buzhichi",
+      "unicode": "e76b",
+      "unicode_decimal": 59243
+    },
+    {
       "icon_id": "783452",
       "name": "积分",
       "font_class": "icon",

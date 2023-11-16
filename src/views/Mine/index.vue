@@ -14,7 +14,7 @@
 		</header>
 		<main>
 			<el-tabs v-model="activeName" class="demo-tabs" @tabChange="tabChange">
-				<el-tab-pane label="收藏列表" name="1">
+				<el-tab-pane label="喜欢列表" name="1">
 					<div class="collection-list">
 						<div class="list-item">
 							<div class="left">
@@ -22,7 +22,7 @@
 							</div>
 							<div class="title">xxxxxxxG</div>
 							<div class="opt">
-								<el-button type="danger" :icon="Star" @click="cancelCollection">取消收藏</el-button>
+								<el-button type="danger" :icon="Star" @click="cancelCollection">取消</el-button>
 							</div>
 						</div>
 					</div>
@@ -35,12 +35,12 @@
 							</div>
 							<div class="title">xxxxxxxG</div>
 							<div class="opt">
-								<el-button type="danger" :icon="View" @click="cancelHide">取消隐藏</el-button>
+								<el-button type="danger" :icon="View" @click="cancelHide">取消</el-button>
 							</div>
 						</div>
 					</div>
 				</el-tab-pane>
-				<el-tab-pane label="发表列表" name="3">
+				<el-tab-pane label="发布列表" name="3">
 					<div class="my-list" style="width: 100%; padding: 10px 0; height: 30px">
 						<el-button type="primary" style="margin-left: auto; display: block" :icon="Edit" @click="addNewArticle = true"></el-button>
 					</div>
