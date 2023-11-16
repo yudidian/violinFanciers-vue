@@ -22,7 +22,7 @@
 			</p>
 		</div>
 		<div class="image">
-			<el-image style="width: 480px; height: 230px" :src="url" fit="cover" />
+			<el-image style="width: 480px; height: 230px" src="url" fit="cover" />
 		</div>
 		<div class="button-wrapper">
 			<div class="return">
@@ -56,8 +56,11 @@ const startValue = ref(0);
 
 <style scoped lang="scss">
 .wrapper {
-	height: 80vh;
+	height: 85vh;
+	width: 100%;
 	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 0 10px;
 	.header {
 		.title {
 			padding: 10px;
@@ -83,6 +86,7 @@ const startValue = ref(0);
 		}
 	}
 	.image {
+		padding: 10px 0;
 		text-align: center;
 	}
 	.button-wrapper {

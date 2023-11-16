@@ -2,12 +2,15 @@
 	<div class="common-layout">
 		<el-container>
 			<el-header class="swpu-header" height="40px">
-				<div>
+				<div style="display: flex; align-items: center">
 					<span>{{ user.nickname }}用户</span>
 					<el-divider direction="vertical" />
 					<el-popconfirm title="是否确定退出登录？" @confirm="logout">
 						<template #reference>
-							<span style="cursor: pointer">退出登录</span>
+							<div style="display: flex; align-items: center">
+								<el-icon style="color: red; margin-right: 2px; margin-top: 1px"><SwitchButton /></el-icon>
+								<span style="cursor: pointer">退出登录</span>
+							</div>
 						</template>
 					</el-popconfirm>
 				</div>
@@ -24,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import { SwitchButton } from '@element-plus/icons-vue';
 import { defineComponent, ref } from 'vue';
 import useUserStore from '@/store/modules/user.ts';
 import { useRouter, useRoute } from 'vue-router';
@@ -54,5 +58,8 @@ function logout() {
 	width: 1160px;
 	margin: 0 auto;
 	height: 100vh;
+}
+.el-menu-demo {
+	background-color: rgba(229, 243, 245, 0.2);
 }
 </style>
