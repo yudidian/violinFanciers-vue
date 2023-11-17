@@ -27,17 +27,17 @@
 		<div class="button-wrapper">
 			<div class="return">
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Back /></el-icon>
-				<span style="margin-right: 10px">Back</span>
+				<span style="margin-right: 10px" @click="router.back()">Back</span>
 			</div>
-			<div class="support">
+			<div :class="!supportFlag ? 'support animate__flip' : 'support animate__flip animate__animated'" @click="supportHandler">
 				<span class="iconfont icon-zhichi" style="font-size: 24px; margin-top: 1px"></span>
 				<span style="margin-left: 10px">20</span>
 			</div>
-			<div class="oppose">
+			<div :class="!opposeFlag ? 'oppose animate__slideInDown' : 'oppose animate__slideInDown animate__animated'" @click="opposeHandler">
 				<span class="iconfont icon-buzhichi" style="font-size: 24px; margin-top: 1px"></span>
 				<span style="margin-left: 10px">20</span>
 			</div>
-			<div class="hide">
+			<div :class="!hideFlag ? 'hide animate__flipOutY' : 'hide animate__flipOutY animate__animated'" @click="hideHandler">
 				<span>Hide:</span>
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Hide /></el-icon>
 			</div>
@@ -48,8 +48,51 @@
 <script setup lang="ts">
 import { defineComponent, ref } from 'vue';
 import { Hide, Back } from '@element-plus/icons-vue';
-
+import { useRoute, useRouter } from 'vue-router';
+import useUserStore from '@/store/modules/user.ts';
+import { insertUserHide, insertUserLike } from '@/api/main.ts';
+const router = useRouter();
+const route = useRoute();
+const user = useUserStore();
+const articleInfo = ref({
+	title: '',
+	text: '',
+	baseImg: '',
+});
+const supportFlag = ref(false);
+const opposeFlag = ref(false);
+const hideFlag = ref(false);
 defineComponent({ name: 'PageDetail' });
+async function supportHandler() {
+	supportFlag.value = true;
+	setTimeout(() => {
+		supportFlag.value = false;
+	}, 500);
+	const res = await insertUserLike({
+		userId: user.userInfo.id,
+		articleId: route.params.id,
+	});
+}
+function opposeHandler() {
+	opposeFlag.value = true;
+	setTimeout(() => {
+		opposeFlag.value = false;
+	}, 1000);
+}
+async function hideHandler() {
+	hideFlag.value = true;
+	setTimeout(() => {
+		hideFlag.value = false;
+	}, 500);
+	const res = await insertUserHide({
+		userId: user.userInfo.id,
+		articleId: route.params.id,
+	});
+}
+async function getArticleDetail() {}
+function initData() {
+	getArticleDetail();
+}
 </script>
 
 <style scoped lang="scss">

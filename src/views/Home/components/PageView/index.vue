@@ -6,15 +6,24 @@
 				<span style="font-weight: bold">Latest Share</span>
 			</div>
 			<div class="article-wrapper">
-				<div v-for="item in 10" :key="item" class="article-item" @click="toDetail(item)">
+				<div v-for="item in listByDate" :key="item.articleId" class="article-item" @click="toDetail(item.articleId)">
 					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="item" fit="cover" />
+						<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
 					</div>
 					<div class="item-info">
 						<div class="info-author" style="font-weight: 900">作者</div>
 						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
 					</div>
-					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
+					<div class="item-message">{{ item.title }}</div>
+				</div>
+				<div style="display: flex; justify-content: center; width: 100%">
+					<el-pagination
+						layout="prev, pager, next"
+						:total="listDateTotal"
+						@current-change="listParamsDate.current = $event"
+						@prev-click="listParamsDate.current = $event"
+						@next-click="listParamsDate.current = $event"
+					/>
 				</div>
 			</div>
 		</div>
@@ -24,15 +33,24 @@
 				<span style="font-weight: bold">Highest Rated</span>
 			</div>
 			<div class="article-wrapper">
-				<div v-for="item in 10" :key="item" class="article-item">
+				<div v-for="item in listByLike" :key="item.articleId" class="article-item" @click="toDetail(item.articleId)">
 					<div class="item-image">
-						<el-image style="width: 240px; height: 160px" :src="item" fit="cover" />
+						<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
 					</div>
 					<div class="item-info">
 						<div class="info-author" style="font-weight: 900">作者</div>
 						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
 					</div>
-					<div class="item-message">文章孙菲菲深粉色粉色粉色飞逝飞逝肺栓塞粉色</div>
+					<div class="item-message">{{ item.title }}</div>
+				</div>
+				<div style="display: flex; justify-content: center; width: 100%">
+					<el-pagination
+						layout="prev, pager, next"
+						:total="listLikeTotal"
+						@current-change="listParamsLike.current = $event"
+						@prev-click="listParamsLike.current = $event"
+						@next-click="listParamsLike.current = $event"
+					/>
 				</div>
 			</div>
 		</div>
@@ -40,27 +58,74 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { getArticleByDateOrder, getArticleByLike } from '@/api/main.ts';
 
 const router = useRouter();
+const listDateTotal = ref(0);
+const listLikeTotal = ref(0);
+const listParamsDate = ref({
+	current: 1,
+	size: 4,
+});
+const listParamsLike = ref({
+	current: 1,
+	size: 4,
+});
+watch(listParamsDate.value, () => {
+	getListByDate();
+});
+watch(listParamsLike.value, () => {
+	getListByLike();
+});
+const listByDate = ref([]);
+const listByLike = ref([]);
 defineComponent({ name: 'PageView' });
-function toDetail(item: number) {
-	console.log(item);
+function toDetail(articleId: number) {
 	router.push({
 		path: '/home/page-detail',
 		params: {
-			id: item,
+			id: articleId,
 		},
 	});
 }
+function currentChange(page: number) {
+	listParamsDate.value.current = page;
+}
+async function getListByDate() {
+	const res = await getArticleByDateOrder(listParamsDate.value);
+	listByDate.value = res.data.records;
+	listDateTotal.value = res.data.total;
+}
+async function getListByLike() {
+	const res = await getArticleByLike(listParamsDate.value);
+	listByLike.value = res.data.records;
+	listLikeTotal.value = res.data.total;
+}
+function initData() {
+	getListByLike();
+	getListByDate();
+}
+initData();
 </script>
 
 <style scoped lang="scss">
 @import '../../../../assets/style/base.scss';
+:deep(.el-pager) {
+	li {
+		background-color: transparent;
+	}
+}
+:deep(.el-pagination) {
+	button {
+		background-color: transparent;
+	}
+}
 .wrapper {
 	display: flex;
 	height: 80vh;
+	margin-top: 20px;
 	justify-content: center;
 	.left,
 	.right {
@@ -72,6 +137,7 @@ function toDetail(item: number) {
 			align-items: center;
 			border: 1px solid #dcdcdc;
 			margin-top: 10px;
+			height: 600px;
 			.article-item {
 				width: 45%;
 				padding: 10px;

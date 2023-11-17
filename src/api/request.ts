@@ -1,11 +1,12 @@
 import axios, { AxiosInstance, AxiosError, AxiosResponse, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { ElMessage } from 'element-plus';
-import router from '@/router/index';
+import router from '@/router/router.ts';
+
 // 数据返回的接口
 // 定义请求响应参数，不含data
 interface Result {
-	status: number;
-	message: string;
+	code: number;
+	msg: string;
 }
 
 // 请求响应参数，包含data
@@ -13,7 +14,7 @@ interface ResultData<T = any> extends Result {
 	data?: T;
 }
 
-const URL = process.env.VUE_APP_BASE_API;
+const URL = import.meta.env.VITE_BASE_API;
 enum RequestEnums {
 	TIMEOUT = 20000,
 	OVERDUE = 600, // 登录失效
@@ -35,6 +36,7 @@ class RequestHttp {
 	public constructor(config: AxiosRequestConfig) {
 		// 实例化axios
 		this.service = axios.create(config);
+		this.service.defaults.withCredentials = true;
 
 		/**
 		 * 请求拦截器
@@ -44,15 +46,17 @@ class RequestHttp {
 		this.service.interceptors.request.use(
 			(config: InternalAxiosRequestConfig) => {
 				if ((config as any).needLoading) {
-					// this.loading = ElLoading.service({
-					//   lock: true,
-					//   text: '正在请求数据...',
-					//   background: 'rgb(0,0,0,0.5)'
-					// })
+					this.loading = ElLoading.service({
+						lock: true,
+						text: '正在请求数据...',
+						background: 'rgb(0,0,0,0.5)',
+					});
 				}
-				const token = localStorage.getItem('token'); // 保存token到localStorage中
+				const userInfo = JSON.parse(localStorage.getItem('user'));
+				const token = userInfo ? userInfo.token : undefined; // 保存token到localStorage中
 				if (token) {
-					(config as any).headers.Authorization = 'Bearer ' + token; // 携带请求头
+					document.cookie = 'jwt=' + token;
+					// (config as any).headers.Authorization = 'Bearer ' + token; // 携带请求头
 				}
 				return config;
 			},
@@ -71,19 +75,19 @@ class RequestHttp {
 				let { data } = response;
 				data = JSON.parse(JSON.stringify(data));
 				// 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
-				if (!data.status) {
-					if (data.message && data.message === 'success') {
+				if (!data.code) {
+					if (data.msg && data.msg === 'success') {
 						return data;
 					} else {
-						if (data.message) {
+						if (data.msg) {
 							return Promise.reject(data);
 						} else {
 							return data;
 						}
 					}
 				}
-				if (data.status && data.status !== 200) {
-					ElMessage.error(data.message); // 此处也可以使用组件提示报错信息
+				if (data.code && data.code !== 200) {
+					ElMessage.error(data.msg); // 此处也可以使用组件提示报错信息
 					return Promise.reject(data);
 				}
 				return data;
@@ -91,7 +95,7 @@ class RequestHttp {
 			(error: AxiosError) => {
 				const { response } = error;
 				if (response) {
-					this.handleCode(response.status);
+					this.handleCode(response.code);
 				}
 				if (!window.navigator.onLine) {
 					ElMessage.error('Network connection failed');

@@ -2,8 +2,8 @@
 	<div class="login-wrapper">
 		<div class="wrapper-left">
 			<div class="left-content">
-				<h1 class="title">Join our family now</h1>
-				<p class="message">Make music better</p>
+				<h1 class="title animate__slideInLeft animate__animated">Join our family now</h1>
+				<p class="message animate__backInUp animate__animated">Make music better</p>
 			</div>
 		</div>
 		<div class="wrapper-right">
@@ -54,7 +54,11 @@
 </template>
 <script setup lang="ts">
 import { defineComponent, reactive, ref } from 'vue';
-import { FormRules, FormInstance } from 'element-plus';
+import { FormRules, FormInstance, ElMessage } from 'element-plus';
+import { register } from '@/api/main.ts';
+import useUserStore from '@/store/modules/user.ts';
+import { useRouter } from 'vue-router';
+
 interface RuleLogin {
 	account: string;
 	password: string;
@@ -65,6 +69,8 @@ interface RuleRegister extends RuleLogin {
 defineComponent({
 	account: 'Login',
 });
+const router = useRouter();
+const user = useUserStore();
 const formLogin = ref<FormInstance>();
 const formRegister = ref<FormInstance>();
 const formLoginData = ref({
@@ -111,11 +117,18 @@ const rulesRegister = reactive<FormRules<RuleRegister>>({
 });
 function registerHandler() {
 	if (!formRegister.value) return;
-	formRegister.value.validate((valid) => {
+	formRegister.value.validate(async (valid) => {
 		if (valid) {
-			console.log('submit!');
+			await register(formRegisterData.value);
+			isRegister.value = false;
+			formLoginData.value.account = formRegisterData.value.account;
+			formLoginData.value.password = formRegisterData.value.password;
+			formRegisterData.value = { account: '', password: '', nextPassword: '' };
+			ElMessage({
+				message: 'Successful registration',
+				type: 'success',
+			});
 		} else {
-			console.log('error submit!');
 			return false;
 		}
 	});
@@ -124,9 +137,9 @@ function loginHandler() {
 	if (!formLogin.value) return;
 	formLogin.value.validate((valid) => {
 		if (valid) {
-			console.log('submit!');
+			user.userLogin(formLoginData.value);
+			router.replace('/');
 		} else {
-			console.log('error submit!');
 			return false;
 		}
 	});
@@ -149,7 +162,7 @@ const isRegister = ref(false);
 	.wrapper-left {
 		.left-content {
 			position: absolute;
-			top: 50%;
+			top: 55%;
 			left: 55%;
 			transform: translate(-50%, -50%);
 			width: 600px;

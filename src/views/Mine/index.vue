@@ -2,15 +2,21 @@
 	<div class="wrapper">
 		<header>
 			<div class="image">
-				<el-image src="" fit="cover" style="width: 100px; height: 100px"></el-image>
+				<el-image fit="cover" style="width: 100px; height: 100px" src="/image/user.jpg"></el-image>
 			</div>
 			<div class="name">
-				<span>用户名</span>
+				<span>{{ user.account }}</span>
 			</div>
 			<div class="other-info">
-				<div><span class="iconfont icon-icon" style="margin-right: 10px"></span>Integral：<span style="color: red; margin-right: 20px">45</span></div>
 				<div>
-					<span class="iconfont icon-shuliang" style="margin-right: 10px"></span>Number of published articles：<span style="color: red">45</span>
+					<span class="iconfont icon-icon" style="margin-right: 10px"></span>Integral：<span style="color: red; margin-right: 20px">{{
+						userScore
+					}}</span>
+				</div>
+				<div>
+					<span class="iconfont icon-shuliang" style="margin-right: 10px"></span>Number of published articles：<span style="color: red">{{
+						userArticleSum
+					}}</span>
 				</div>
 			</div>
 		</header>
@@ -18,27 +24,55 @@
 			<el-tabs v-model="activeName" class="demo-tabs" @tabChange="tabChange">
 				<el-tab-pane label="Like List" name="1">
 					<div class="collection-list">
-						<div class="list-item">
+						<div
+							v-for="item in likeList"
+							:key="item.articleId"
+							class="list-item"
+							@click="router.push({ name: 'PageDetail', params: { id: item.articleId } })"
+						>
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover"></el-image>
+								<el-image style="width: 50px; height: 50px" fit="cover" :src="item.baseImg"></el-image>
 							</div>
-							<div class="title">xxxxxxxG</div>
+							<div class="title">{{ item.title }}</div>
 							<div class="opt">
 								<el-button type="danger" :icon="Star" @click="cancelCollection">Cancel</el-button>
 							</div>
+						</div>
+						<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
+							<el-pagination
+								layout="prev, pager, next"
+								:total="listLikeTotal"
+								@current-change="likeListParams.current = $event"
+								@prev-click="likeListParams.current = $event"
+								@next-click="likeListParams.current = $event"
+							/>
 						</div>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="Hidden List" name="2">
 					<div class="collection-list">
-						<div class="list-item">
+						<div
+							v-for="item in hideList"
+							:key="item.articleId"
+							class="list-item"
+							@click="router.push({ name: 'PageDetail', params: { id: item.articleId } })"
+						>
 							<div class="left">
 								<el-image style="width: 50px; height: 50px" fit="cover"></el-image>
 							</div>
-							<div class="title">xxxxxxxG</div>
+							<div class="title">{{ item.title }}</div>
 							<div class="opt">
 								<el-button type="danger" :icon="View" @click="cancelHide">Hide</el-button>
 							</div>
+						</div>
+						<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
+							<el-pagination
+								layout="prev, pager, next"
+								:total="listHideTotal"
+								@current-change="hideListParams.current = $event"
+								@prev-click="hideListParams.current = $event"
+								@next-click="hideListParams.current = $event"
+							/>
 						</div>
 					</div>
 				</el-tab-pane>
@@ -47,14 +81,23 @@
 						<el-button type="primary" style="margin-left: auto; display: block" :icon="Edit" @click="addNewArticle = true"></el-button>
 					</div>
 					<div class="collection-list">
-						<div class="list-item">
+						<div v-for="item in personalList" :key="item.articleId" class="list-item">
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover"></el-image>
+								<el-image style="width: 50px; height: 50px" fit="cover" :url="item.baseImg"></el-image>
 							</div>
-							<div class="title">xxxxxxxG</div>
+							<div class="title">{{ item.title }}</div>
 							<div class="opt">
 								<el-button type="danger" :icon="Delete" @click="cancelHide">Delete</el-button>
 							</div>
+						</div>
+						<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
+							<el-pagination
+								layout="prev, pager, next"
+								:total="listPersonalTotal"
+								@current-change="personalListParams.current = $event"
+								@prev-click="personalListParams.current = $event"
+								@next-click="personalListParams.current = $event"
+							/>
 						</div>
 					</div>
 				</el-tab-pane>
@@ -68,18 +111,18 @@
 				<el-form-item label="Image" prop="image">
 					<el-upload
 						class="avatar-uploader"
-						action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+						action="/api/violinlovers/article/uploadPicture"
 						:show-file-list="false"
 						:on-success="handleAvatarSuccess"
 						:before-upload="beforeAvatarUpload"
 					>
-						<img v-if="imageUrl" :src="imageUrl" class="avatar" alt="" />
+						<el-image v-if="imageUrl" :url="imageUrl" style="width: 200px; height: 200px" fit="cover" />
 						<el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
 					</el-upload>
 				</el-form-item>
 				<el-form-item label="Article content" prop="message">
 					<el-input
-						v-model="formData.message"
+						v-model="formData.text"
 						:autosize="{ minRows: 8, maxRows: 16 }"
 						type="textarea"
 						maxlength="800"
@@ -99,62 +142,120 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref, reactive } from 'vue';
+import { defineComponent, ref, reactive, watch } from 'vue';
 import { View, Delete, Edit, Plus, Star } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox, FormRules, FormInstance } from 'element-plus';
 import type { UploadProps } from 'element-plus';
+import { getArticleByHide, getArticleByLike, insertArticle, selfArticle, getUserScore } from '@/api/main.ts';
+import useUserStore from '@/store/modules/user.ts';
+import { useRouter } from 'vue-router';
 interface RuleForm {
 	title: string;
-	image: string;
-	message: string;
+	baseImg: string;
+	text: string;
 }
 defineComponent({ name: 'Mine' });
+const router = useRouter();
+const user = useUserStore();
+const likeList = ref([]);
+const hideList = ref([]);
+const personalList = ref([]);
+const listPersonalTotal = ref(0);
+const listHideTotal = ref(0);
+const listLikeTotal = ref(0);
+const likeListParams = ref({
+	current: 1,
+	size: 10,
+});
+const hideListParams = ref({
+	current: 1,
+	size: 10,
+});
+const personalListParams = ref({
+	current: 1,
+	size: 10,
+});
 const ruleFormRef = ref<FormInstance>();
 const imageUrl = ref('');
 const activeName = ref('1');
+const userScore = ref(0);
+const userArticleSum = ref(0);
 const addNewArticle = ref(false);
 const formData = ref({
 	title: '',
-	image: '',
-	message: '',
+	baseImg: '',
+	text: '',
 });
 const rules = reactive<FormRules<RuleForm>>({
 	title: [
 		{ required: true, message: 'Article title is required', trigger: 'blur' },
 		{ min: 3, max: 30, message: 'Length should be 3 to 30', trigger: 'blur' },
 	],
-	message: [
+	text: [
 		{ required: true, message: 'Article content is required', trigger: 'blur' },
 		{ max: 800, message: 'The maximum length of the article content is 800.', trigger: 'blur' },
 	],
 });
+watch(likeListParams.value, () => {
+	getLikeList(likeListParams.value);
+});
+watch(hideListParams.value, () => {
+	getHideList(hideListParams.value);
+});
+watch(personalListParams.value, () => {
+	getPersonalList(personalListParams.value);
+});
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
 	imageUrl.value = URL.createObjectURL(uploadFile.raw!);
+	formData.value.baseImg = response.data;
 };
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-	if (rawFile.type !== 'image/jpeg') {
-		ElMessage.error('Avatar picture must be JPG format!');
+	const witheList = ['image/jpeg', 'image/png', 'image/jpg'];
+	if (!witheList.includes(rawFile.type)) {
+		ElMessage.error('Only upload jpeg、png、jpg!');
 		return false;
 	} else if (rawFile.size / 1024 / 1024 > 2) {
-		ElMessage.error('Avatar picture size can not exceed 2MB!');
+		ElMessage.error('Picture size can not exceed 2MB!');
 		return false;
 	}
 	return true;
 };
 async function addNewArticleHandler() {
 	if (!ruleFormRef.value) return;
-	await ruleFormRef.value.validate((valid, fields) => {
+	await ruleFormRef.value.validate(async (valid, fields) => {
 		if (valid) {
-			console.log('submit!');
+			await insertArticle(formData.value);
+			ElMessage.success('Article added successfully');
+			addNewArticle.value = false;
+			formData.value = {
+				title: '',
+				baseImg: '',
+				text: '',
+			};
+			await getPersonalList();
 		} else {
 			console.log('error submit!', fields);
 		}
 	});
 }
-function getCollectionList() {}
+async function getLikeList() {
+	const res = await getArticleByLike(likeListParams.value);
+	likeList.value = res.data.records;
+	listLikeTotal.value = res.data.total;
+}
 
-function getHideList() {}
+async function getHideList() {
+	const res = await getArticleByHide(hideListParams.value);
+	hideList.value = res.data.records;
+	listHideTotal.value = res.data.records.total;
+}
+async function getPersonalList() {
+	const res = await selfArticle(personalListParams.value);
+	personalList.value = res.data.records;
+	listPersonalTotal.value = res.data.total;
+	userArticleSum.value = res.data.records.length;
+}
 
 function cancelHide() {
 	ElMessageBox.confirm('proxy will permanently delete the file. Continue?', 'Warning', {
@@ -198,19 +299,42 @@ function cancelCollection() {
 function tabChange(name: string) {
 	switch (name) {
 		case '1': {
-			getCollectionList();
+			getLikeList(likeListParams.value);
 			break;
 		}
 		case '2': {
-			getHideList();
+			getHideList(hideListParams.value);
+			break;
+		}
+		case '3': {
+			getPersonalList(personalListParams.value);
 			break;
 		}
 	}
 }
+async function getUserScoreHandler() {
+	const res = await getUserScore();
+	console.log(res);
+}
+function initData() {
+	getLikeList(likeListParams.value);
+	getUserScoreHandler();
+}
+initData();
 </script>
 
 <style scoped lang="scss">
 @import '../../assets/style/base.scss';
+:deep(.el-pager) {
+	li {
+		background-color: transparent;
+	}
+}
+:deep(.el-pagination) {
+	button {
+		background-color: transparent;
+	}
+}
 header {
 	display: flex;
 	align-items: center;
@@ -234,6 +358,8 @@ header {
 .collection-list {
 	display: flex;
 	flex-direction: column;
+	height: 60vh;
+	overflow: hidden;
 	.list-item {
 		display: flex;
 		align-items: center;
@@ -256,6 +382,8 @@ header {
 }
 .avatar-uploader {
 	:deep(.el-upload) {
+		width: 200px;
+		height: 200px;
 		border: 2px dashed var(--el-border-color);
 		border-radius: 6px;
 		cursor: pointer;
