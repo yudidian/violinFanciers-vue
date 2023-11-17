@@ -5,31 +5,29 @@
 				<span class="iconfont icon-zuixingengxin" style="font-size: 24px; color: #0086b3; margin-right: 10px"></span>
 				<span style="font-weight: bold">Latest Share</span>
 			</div>
-			<div class="article-wrapper">
-				<div v-if="listByDate.length > 0" style="width: 100%; height: 100%">
-					<div v-for="item in listByDate" :key="item.articleId" class="article-item" @click="toDetail(item.articleId)">
-						<div class="item-image">
-							<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
-						</div>
-						<div class="item-info">
-							<div class="info-author" style="font-weight: 900">作者</div>
-							<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
-						</div>
-						<div class="item-message">{{ item.title }}</div>
+			<div v-if="listByDate.length > 0" class="article-wrapper">
+				<div v-for="item in listByDate" :key="item.articleId" class="article-item" @click="toDetail(item.articleId)">
+					<div class="item-image">
+						<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
 					</div>
-					<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
-						<el-pagination
-							layout="prev, pager, next"
-							:total="listDateTotal"
-							@current-change="listParamsDate.current = $event"
-							@prev-click="listParamsDate.current = $event"
-							@next-click="listParamsDate.current = $event"
-						/>
+					<div class="item-info">
+						<div class="info-author" style="font-weight: 900">作者</div>
+						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
 					</div>
+					<div class="item-message">{{ item.title }}</div>
 				</div>
-				<div v-else style="display: flex; justify-content: center; width: 100%">
-					<el-empty :image-size="200" />
+				<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
+					<el-pagination
+						layout="prev, pager, next"
+						:total="listDateTotal"
+						@current-change="listParamsDate.current = $event"
+						@prev-click="listParamsDate.current = $event"
+						@next-click="listParamsDate.current = $event"
+					/>
 				</div>
+			</div>
+			<div v-else style="display: flex; justify-content: center; width: 100%">
+				<el-empty :image-size="200" />
 			</div>
 		</div>
 		<div class="right">
@@ -37,31 +35,29 @@
 				<span class="iconfont icon-icon1" style="font-size: 24px; color: #f8001d; margin-right: 10px"></span>
 				<span style="font-weight: bold">Highest Rated</span>
 			</div>
-			<div class="article-wrapper">
-				<div v-if="listByLike.length > 0" style="width: 100%; height: 100%">
-					<div v-for="item in listByLike" :key="item.articleId" class="article-item" @click="toDetail(item.articleId)">
-						<div class="item-image">
-							<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
-						</div>
-						<div class="item-info">
-							<div class="info-author" style="font-weight: 900">作者</div>
-							<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
-						</div>
-						<div class="item-message">{{ item.title }}</div>
+			<div v-if="listByLike.length > 0" class="article-wrapper">
+				<div v-for="item in listByLike" :key="item.articleId" class="article-item" @click="toDetail(item.articleId)">
+					<div class="item-image">
+						<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
 					</div>
-					<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
-						<el-pagination
-							layout="prev, pager, next"
-							:total="listLikeTotal"
-							@current-change="listParamsLike.current = $event"
-							@prev-click="listParamsLike.current = $event"
-							@next-click="listParamsLike.current = $event"
-						/>
+					<div class="item-info">
+						<div class="info-author" style="font-weight: 900">作者</div>
+						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
 					</div>
+					<div class="item-message">{{ item.title }}</div>
 				</div>
-				<div v-else style="display: flex; justify-content: center; width: 100%">
-					<el-empty :image-size="200" />
+				<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
+					<el-pagination
+						layout="prev, pager, next"
+						:total="listLikeTotal"
+						@current-change="listParamsLike.current = $event"
+						@prev-click="listParamsLike.current = $event"
+						@next-click="listParamsLike.current = $event"
+					/>
 				</div>
+			</div>
+			<div v-else style="display: flex; justify-content: center; width: 100%">
+				<el-empty :image-size="200" />
 			</div>
 		</div>
 	</div>

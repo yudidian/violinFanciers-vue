@@ -26,7 +26,7 @@
 					<div v-if="likeList.length > 0" class="collection-list">
 						<div v-for="item in likeList" :key="item.articleId" class="list-item">
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover" :src="item.baseImg"></el-image>
+								<el-image style="width: 50px; height: 50px" fit="cover" :src="getImageUrl(item.baseImg)"></el-image>
 							</div>
 							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
@@ -51,7 +51,7 @@
 					<div v-if="hideList.length > 0" class="collection-list">
 						<div v-for="item in hideList" :key="item.articleId" class="list-item">
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover"></el-image>
+								<el-image style="width: 50px; height: 50px" fit="cover" :src="getImageUrl(item.baseImg)"></el-image>
 							</div>
 							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
@@ -79,7 +79,9 @@
 					<div v-if="personalList.length > 0" class="collection-list">
 						<div v-for="item in personalList" :key="item.articleId" class="list-item">
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover" :url="item.baseImg"></el-image>
+								<el-upload>
+									<el-image style="width: 50px; height: 50px" fit="cover" :src="getImageUrl(item.baseImg)"></el-image>
+								</el-upload>
 							</div>
 							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
@@ -115,7 +117,7 @@
 						:on-success="handleAvatarSuccess"
 						:before-upload="beforeAvatarUpload"
 					>
-						<el-image v-if="imageUrl" :url="imageUrl" style="width: 200px; height: 200px" fit="cover" />
+						<el-image v-if="imageUrl" :src="getImageUrl(imageUrl)" style="width: 200px; height: 200px" fit="cover" />
 						<el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
 					</el-upload>
 				</el-form-item>
@@ -205,6 +207,7 @@ watch(personalListParams.value, () => {
 	getPersonalList();
 });
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
+	console.log('--------', uploadFile);
 	imageUrl.value = URL.createObjectURL(uploadFile.raw!);
 	formData.value.baseImg = response.data;
 };
@@ -338,6 +341,12 @@ async function cancelDelete(article_id: string) {
 				message: 'Delete canceled',
 			});
 		});
+}
+function getImageUrl(url: string) {
+	if (!url) return '';
+	if (url.trim() === '') return '';
+	console.log(new URL(url, document.baseURI), import.meta.url, document.baseURI);
+	return new URL(url, import.meta.url).href;
 }
 function initData() {
 	getLikeList();
