@@ -33,12 +33,11 @@
 				<span class="iconfont icon-zhichi" style="font-size: 24px; margin-top: 1px"></span>
 				<span style="margin-left: 10px">20</span>
 			</div>
-			<div :class="!opposeFlag ? 'oppose animate__slideInDown' : 'oppose animate__slideInDown animate__animated'" @click="opposeHandler">
+			<div :class="!opposeFlag ? 'oppose animate__flip' : 'oppose animate__flip animate__animated'" @click="opposeHandler">
 				<span class="iconfont icon-buzhichi" style="font-size: 24px; margin-top: 1px"></span>
 				<span style="margin-left: 10px">20</span>
 			</div>
-			<div :class="!hideFlag ? 'hide animate__flipOutY' : 'hide animate__flipOutY animate__animated'" @click="hideHandler">
-				<span>Hide:</span>
+			<div :class="!hideFlag ? 'hide animate__shakeX' : 'hide animate__shakeX animate__animated'" @click="hideHandler">
 				<el-icon style="font-size: 28px; margin-left: 10px; cursor: pointer"><Hide /></el-icon>
 			</div>
 		</div>
@@ -50,7 +49,7 @@ import { defineComponent, ref } from 'vue';
 import { Hide, Back } from '@element-plus/icons-vue';
 import { useRoute, useRouter } from 'vue-router';
 import useUserStore from '@/store/modules/user.ts';
-import { insertUserHide, insertUserLike } from '@/api/main.ts';
+import { deleteUserLike, insertUserHide, insertUserLike } from '@/api/main.ts';
 const router = useRouter();
 const route = useRoute();
 const user = useUserStore();
@@ -69,15 +68,19 @@ async function supportHandler() {
 		supportFlag.value = false;
 	}, 500);
 	const res = await insertUserLike({
-		userId: user.userInfo.id,
-		articleId: route.params.id,
+		userId: user.userInfo.user_id,
+		articleId: route.query.id,
 	});
 }
-function opposeHandler() {
+async function opposeHandler() {
 	opposeFlag.value = true;
 	setTimeout(() => {
 		opposeFlag.value = false;
 	}, 1000);
+	const res = await deleteUserLike({
+		userId: user.userInfo.user_id,
+		articleId: route.query.id,
+	});
 }
 async function hideHandler() {
 	hideFlag.value = true;
@@ -85,9 +88,10 @@ async function hideHandler() {
 		hideFlag.value = false;
 	}, 500);
 	const res = await insertUserHide({
-		userId: user.userInfo.id,
-		articleId: route.params.id,
+		userId: user.userInfo.user_id,
+		articleId: route.query.id,
 	});
+	console.log(res);
 }
 async function getArticleDetail() {}
 function initData() {

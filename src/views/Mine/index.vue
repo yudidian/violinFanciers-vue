@@ -21,19 +21,14 @@
 			</div>
 		</header>
 		<main>
-			<el-tabs v-model="activeName" class="demo-tabs" @tabChange="tabChange">
+			<el-tabs v-model="activeName" class="demo-tabs" @tab-change="tabChange">
 				<el-tab-pane label="Like List" name="1">
-					<div class="collection-list">
-						<div
-							v-for="item in likeList"
-							:key="item.articleId"
-							class="list-item"
-							@click="router.push({ name: 'PageDetail', params: { id: item.articleId } })"
-						>
+					<div v-if="likeList.length > 0" class="collection-list">
+						<div v-for="item in likeList" :key="item.articleId" class="list-item">
 							<div class="left">
 								<el-image style="width: 50px; height: 50px" fit="cover" :src="item.baseImg"></el-image>
 							</div>
-							<div class="title">{{ item.title }}</div>
+							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
 								<el-button type="danger" :icon="Star" @click="cancelCollection">Cancel</el-button>
 							</div>
@@ -48,19 +43,17 @@
 							/>
 						</div>
 					</div>
+					<div v-else style="display: flex; justify-content: center; width: 100%">
+						<el-empty :image-size="200" />
+					</div>
 				</el-tab-pane>
 				<el-tab-pane label="Hidden List" name="2">
-					<div class="collection-list">
-						<div
-							v-for="item in hideList"
-							:key="item.articleId"
-							class="list-item"
-							@click="router.push({ name: 'PageDetail', params: { id: item.articleId } })"
-						>
+					<div v-if="hideList.length > 0" class="collection-list">
+						<div v-for="item in hideList" :key="item.articleId" class="list-item">
 							<div class="left">
 								<el-image style="width: 50px; height: 50px" fit="cover"></el-image>
 							</div>
-							<div class="title">{{ item.title }}</div>
+							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
 								<el-button type="danger" :icon="View" @click="cancelHide">Hide</el-button>
 							</div>
@@ -75,19 +68,22 @@
 							/>
 						</div>
 					</div>
+					<div v-else style="display: flex; justify-content: center; width: 100%">
+						<el-empty :image-size="200" />
+					</div>
 				</el-tab-pane>
 				<el-tab-pane label="Personal creation" name="3">
 					<div class="my-list" style="width: 100%; padding: 10px 0; height: 30px">
 						<el-button type="primary" style="margin-left: auto; display: block" :icon="Edit" @click="addNewArticle = true"></el-button>
 					</div>
-					<div class="collection-list">
+					<div v-if="personalList.length > 0" class="collection-list">
 						<div v-for="item in personalList" :key="item.articleId" class="list-item">
 							<div class="left">
 								<el-image style="width: 50px; height: 50px" fit="cover" :url="item.baseImg"></el-image>
 							</div>
-							<div class="title">{{ item.title }}</div>
+							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
-								<el-button type="danger" :icon="Delete" @click="cancelHide">Delete</el-button>
+								<el-button type="danger" :icon="Delete" @click="cancelDelete(item.articleId)">Delete</el-button>
 							</div>
 						</div>
 						<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
@@ -99,6 +95,9 @@
 								@next-click="personalListParams.current = $event"
 							/>
 						</div>
+					</div>
+					<div v-else style="display: flex; justify-content: center; width: 100%">
+						<el-empty :image-size="200" />
 					</div>
 				</el-tab-pane>
 			</el-tabs>
@@ -146,7 +145,7 @@ import { defineComponent, ref, reactive, watch } from 'vue';
 import { View, Delete, Edit, Plus, Star } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox, FormRules, FormInstance } from 'element-plus';
 import type { UploadProps } from 'element-plus';
-import { getArticleByHide, getArticleByLike, insertArticle, selfArticle, getUserScore } from '@/api/main.ts';
+import { getArticleByHide, getArticleByLike, insertArticle, selfArticle, getUserScore, deleteArticle } from '@/api/main.ts';
 import useUserStore from '@/store/modules/user.ts';
 import { useRouter } from 'vue-router';
 interface RuleForm {
@@ -197,13 +196,13 @@ const rules = reactive<FormRules<RuleForm>>({
 	],
 });
 watch(likeListParams.value, () => {
-	getLikeList(likeListParams.value);
+	getLikeList();
 });
 watch(hideListParams.value, () => {
-	getHideList(hideListParams.value);
+	getHideList();
 });
 watch(personalListParams.value, () => {
-	getPersonalList(personalListParams.value);
+	getPersonalList();
 });
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
 	imageUrl.value = URL.createObjectURL(uploadFile.raw!);
@@ -299,25 +298,50 @@ function cancelCollection() {
 function tabChange(name: string) {
 	switch (name) {
 		case '1': {
-			getLikeList(likeListParams.value);
+			getLikeList();
 			break;
 		}
 		case '2': {
-			getHideList(hideListParams.value);
+			getHideList();
 			break;
 		}
 		case '3': {
-			getPersonalList(personalListParams.value);
+			getPersonalList();
 			break;
 		}
 	}
 }
 async function getUserScoreHandler() {
 	const res = await getUserScore();
-	console.log(res);
+	if (typeof res.data === 'number') {
+		userScore.value = res.data;
+	}
+}
+async function cancelDelete(article_id: string) {
+	ElMessageBox.confirm('Do you want to delete this article?', 'Warning', {
+		confirmButtonText: 'OK',
+		cancelButtonText: 'Cancel',
+		type: 'warning',
+	})
+		.then(async () => {
+			await deleteArticle({
+				article_id: article_id,
+			});
+			ElMessage({
+				type: 'success',
+				message: 'Delete completed',
+			});
+		})
+		.catch(() => {
+			ElMessage({
+				type: 'info',
+				message: 'Delete canceled',
+			});
+		});
 }
 function initData() {
-	getLikeList(likeListParams.value);
+	getLikeList();
+	getPersonalList();
 	getUserScoreHandler();
 }
 initData();

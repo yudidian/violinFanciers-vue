@@ -23,6 +23,13 @@ export const login = (data: Login) => {
 		params: data,
 	});
 };
+export const deleteArticle = (data: any) => {
+	return request.axios({
+		url: '/violinlovers/article/deleteArticle',
+		method: 'post',
+		params: data,
+	});
+};
 export const signOut = () => {
 	return request.axios({
 		url: '/violinlovers/user/signOut',
@@ -78,29 +85,32 @@ export const selfArticle = (data: ListParams) => {
 		params: data,
 	});
 };
-export const getUserScore = (data: Article) => {
+export const getUserScore = () => {
 	return request.axios({
 		url: '/violinlovers/article/getUserScore',
 		method: 'get',
 	});
 };
-export const insertUserLike = (data: Article) => {
+export const insertUserLike = (data: any) => {
 	return request.axios({
 		url: '/violinlovers/userLike/insertUserLike',
-		method: 'get',
+		method: 'post',
+		data: data,
 	});
 };
-export const deleteUserLike = (data: Article) => {
+export const deleteUserLike = (data: any) => {
 	return request.axios({
 		url: '/violinlovers/userLike/deleteUserLike',
 		method: 'get',
+		data,
 	});
 };
 
-export const insertUserHide = (data: Article) => {
+export const insertUserHide = (data: any) => {
 	return request.axios({
 		url: '/violinlovers/userHide/insertUserHide',
 		method: 'post',
+		data: data,
 	});
 };
 export const deleteUserHide = (data: Article) => {
