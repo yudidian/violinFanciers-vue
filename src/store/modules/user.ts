@@ -20,6 +20,7 @@ const useUserStore = defineStore('user', {
 			this.token = undefined;
 			this.account = undefined;
 			this.user_id = undefined;
+			localStorage.clear();
 			document.cookie = 'jwt=; exdays=Thu, 01 Jan 1970 00:00:00 GMT';
 		},
 		async userLogin(data) {
