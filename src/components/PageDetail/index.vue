@@ -183,6 +183,7 @@ async function getArticleDetail() {
 		opposeCount: data.lowScore,
 	};
 }
+// initialization data
 function initData() {
 	const listLike = JSON.parse(localStorage.getItem('listLike'));
 	const listHide = JSON.parse(localStorage.getItem('listHide'));

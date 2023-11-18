@@ -50,10 +50,10 @@ const router = createRouter({
 });
 
 const noPermission = ['Login', 'PageView'];
-// 全局守卫：登录拦截 本地没有存token,请重新登录
+// Global Guard: Login interception, no token is stored locally, please log in again.
 router.beforeEach((to, from, next) => {
 	const userInfo = JSON.parse(localStorage.getItem('user'));
-	// 判断有没有登录
+	// Determine if you are logged in.
 	if (userInfo === null || userInfo.token === undefined) {
 		if (noPermission.includes(to.name as string)) {
 			next();

@@ -3,6 +3,7 @@ import { login, selectAllUserBelittle, selectAllUserHide, selectAllUserLike, sig
 
 const userInfo = JSON.parse(localStorage.getItem('user'));
 const useUserStore = defineStore('user', {
+	// Store user-related information
 	state: () => ({
 		account: userInfo ? userInfo.account : undefined,
 		token: userInfo ? userInfo.token : undefined,
@@ -23,6 +24,7 @@ const useUserStore = defineStore('user', {
 		},
 		async userLogin(data) {
 			const res = await login(data);
+			// Store relevant lists for judgment
 			const listLike = await selectAllUserLike();
 			const listHide = await selectAllUserHide();
 			const listBelittle = await selectAllUserBelittle();

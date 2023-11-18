@@ -4,7 +4,7 @@ import 'element-plus/dist/index.css';
 import './style.css';
 import App from './App.vue';
 import router from './router/router.ts';
-// 引入pinia并实例化
+// Introduce pinia and instantiate it
 import pinia from './store/store.ts';
 import '@/assets/font/iconfont.css';
 import 'animate.css';

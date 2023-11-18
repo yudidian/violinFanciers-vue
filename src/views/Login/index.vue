@@ -104,6 +104,7 @@ const rulesRegister = reactive<FormRules<RuleRegister>>({
 	nextPassword: [
 		{ required: true, message: 'Please enter your password again', trigger: 'blur' },
 		{
+			// custom validation rule
 			validator: (rule: any, value: any, callback: any) => {
 				if (value !== formRegisterData.value.password) {
 					callback(new Error('The passwords entered twice are inconsistent'));

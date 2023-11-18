@@ -39,10 +39,10 @@ defineComponent({
 	name: 'Home',
 });
 const user = useUserStore();
-// 保持刷新菜单选项不变
+// Leave the refresh menu option unchanged
 const activeIndex = ref('/home/page-view');
 activeIndex.value = route.fullPath;
-// 退出登录
+// log out
 function logout() {
 	user.logoutHandler();
 	router.replace('/login');

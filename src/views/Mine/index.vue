@@ -258,20 +258,20 @@ async function addNewArticleHandler() {
 }
 async function getLikeList() {
 	const res = await getArticleByLike(likeListParams.value);
-	likeList.value = res.data.records;
+	likeList.value = res.data ? res.data.records : [];
 	listLikeTotal.value = res.data.total;
 }
 
 async function getHideList() {
 	const res = await getArticleByHide(hideListParams.value);
-	hideList.value = res.data.records;
-	listHideTotal.value = res.data.records.total;
+	hideList.value = res.data ? res.data.records : [];
+	listHideTotal.value = res.data ? res.data.records.total : 0;
 }
 async function getPersonalList() {
 	const res = await selfArticle(personalListParams.value);
-	personalList.value = res.data.records;
-	listPersonalTotal.value = res.data.total;
-	userArticleSum.value = res.data.records.length;
+	personalList.value = res.data ? res.data.records : [];
+	listPersonalTotal.value = res.data ? res.data.total : 0;
+	userArticleSum.value = res.data ? res.data.records.length : 0;
 }
 
 function cancelHide(row: any) {
@@ -380,12 +380,6 @@ async function cancelDelete(article_id: string) {
 				message: 'Delete canceled',
 			});
 		});
-}
-function getImageUrl(url: string) {
-	if (!url) return '';
-	if (url.trim() === '') return '';
-	console.log(new URL(url, document.baseURI), import.meta.url, document.baseURI);
-	return new URL(url, import.meta.url).href;
 }
 function initData() {
 	getLikeList();
