@@ -3,7 +3,7 @@
 		<el-container>
 			<el-header class="swpu-header" height="40px">
 				<div style="display: flex; align-items: center">
-					<span>{{ user.userInfo.account }}</span>
+					<span>{{ user.userInfo.account ? user.userInfo.account : 'Visitor' }}</span>
 					<el-divider direction="vertical" />
 					<el-popconfirm title="Are you sure to log out？" @confirm="logout">
 						<template #reference>

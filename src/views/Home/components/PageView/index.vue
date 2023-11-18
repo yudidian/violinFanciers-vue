@@ -11,8 +11,14 @@
 						<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
 					</div>
 					<div class="item-info">
-						<div class="info-author" style="font-weight: 900">作者</div>
-						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
+						<div class="info-author" style="font-weight: 900">
+							<div class="info-author" style="font-weight: 900">
+								<el-tooltip effect="dark" :content="item.account" placement="top">
+									{{ item.account }}
+								</el-tooltip>
+							</div>
+						</div>
+						<div class="info-time" style="color: #a1a1a1">{{ item.datetime }}</div>
 					</div>
 					<div class="item-message">{{ item.title }}</div>
 				</div>
@@ -20,6 +26,8 @@
 					<el-pagination
 						layout="prev, pager, next"
 						:total="listDateTotal"
+						:current-page="listParamsDate.current"
+						:page-size="listParamsDate.size"
 						@current-change="listParamsDate.current = $event"
 						@prev-click="listParamsDate.current = $event"
 						@next-click="listParamsDate.current = $event"
@@ -41,8 +49,12 @@
 						<el-image style="width: 240px; height: 160px" :src="item.baseImg" fit="cover" />
 					</div>
 					<div class="item-info">
-						<div class="info-author" style="font-weight: 900">作者</div>
-						<div class="info-time" style="color: #a1a1a1">2023-10-10 12:50:20</div>
+						<div class="info-author" style="font-weight: 900">
+							<el-tooltip effect="dark" :content="item.account" placement="top">
+								{{ item.account }}
+							</el-tooltip>
+						</div>
+						<div class="info-time" style="color: #a1a1a1">{{ item.datetime }}</div>
 					</div>
 					<div class="item-message">{{ item.title }}</div>
 				</div>
@@ -50,6 +62,8 @@
 					<el-pagination
 						layout="prev, pager, next"
 						:total="listLikeTotal"
+						:current-page="listParamsLike.current"
+						:page-size="listParamsLike.size"
 						@current-change="listParamsLike.current = $event"
 						@prev-click="listParamsLike.current = $event"
 						@next-click="listParamsLike.current = $event"
@@ -96,13 +110,11 @@ function toDetail(articleId: number) {
 		},
 	});
 }
-function currentChange(page: number) {
-	listParamsDate.value.current = page;
-}
+
 async function getListByDate() {
 	const res = await getArticleByDateOrder(listParamsDate.value);
 	listByDate.value = res.data.records;
-	listDateTotal.value = res.data.total;
+	listDateTotal.value = res.data.total * 1;
 }
 async function getListByLike() {
 	const res = await getArticleByLike(listParamsDate.value);
@@ -140,12 +152,13 @@ initData();
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
-			align-items: center;
 			border: 1px solid #dcdcdc;
 			margin-top: 10px;
-			height: 600px;
+			height: 640px;
+			padding: 10px;
 			.article-item {
 				width: 45%;
+				height: 260px;
 				padding: 10px;
 				display: flex;
 				flex-direction: column;
@@ -153,6 +166,9 @@ initData();
 				border: 1px solid #dcdcdc;
 				overflow: hidden;
 				cursor: pointer;
+				&:hover {
+					border: 1px solid #d90429;
+				}
 				.item-image {
 					width: 240px;
 					height: 160px;
@@ -163,7 +179,11 @@ initData();
 					justify-content: space-between;
 					.info-author {
 						width: 62px;
+						margin-right: 10px;
 						@include show_line(1);
+					}
+					.info-time {
+						font-size: 12px;
 					}
 				}
 				.item-message {

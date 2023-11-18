@@ -91,6 +91,13 @@ export const getUserScore = () => {
 		method: 'get',
 	});
 };
+export const selectOneArticle = (data: any) => {
+	return request.axios({
+		url: '/violinlovers/article/selectOneArticle',
+		method: 'post',
+		params: data,
+	});
+};
 export const insertUserLike = (data: any) => {
 	return request.axios({
 		url: '/violinlovers/userLike/insertUserLike',
@@ -98,10 +105,16 @@ export const insertUserLike = (data: any) => {
 		data: data,
 	});
 };
+export const selectAllUserLike = () => {
+	return request.axios({
+		url: '/violinlovers/userLike/selectAllUserLike',
+		method: 'post',
+	});
+};
 export const deleteUserLike = (data: any) => {
 	return request.axios({
 		url: '/violinlovers/userLike/deleteUserLike',
-		method: 'get',
+		method: 'post',
 		data,
 	});
 };
@@ -113,9 +126,37 @@ export const insertUserHide = (data: any) => {
 		data: data,
 	});
 };
-export const deleteUserHide = (data: Article) => {
+export const deleteUserHide = (data: any) => {
 	return request.axios({
 		url: '/violinlovers/userHide/deleteUserHide',
-		method: 'get',
+		method: 'post',
+		data,
+	});
+};
+export const selectAllUserHide = () => {
+	return request.axios({
+		url: '/violinlovers/userHide/selectAllUserHide',
+		method: 'post',
+	});
+};
+
+export const insertUserBelittle = (data: any) => {
+	return request.axios({
+		url: '/violinlovers/userBelittle/insertUserBelittle',
+		method: 'post',
+		data,
+	});
+};
+export const deleteUserBelittle = (data) => {
+	return request.axios({
+		url: '/violinlovers/userBelittle/deleteUserBelittle',
+		method: 'post',
+		data,
+	});
+};
+export const selectAllUserBelittle = () => {
+	return request.axios({
+		url: '/violinlovers/userBelittle/selectAllUserBelittle',
+		method: 'post',
 	});
 };

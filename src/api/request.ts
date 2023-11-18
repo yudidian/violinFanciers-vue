@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosError, AxiosResponse, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import router from '@/router/router.ts';
 
 // 数据返回的接口
@@ -57,12 +57,14 @@ class RequestHttp {
 				if (token) {
 					document.cookie = 'jwt=' + token;
 					// (config as any).headers.Authorization = 'Bearer ' + token; // 携带请求头
+				} else {
+					document.cookie = '';
 				}
 				return config;
 			},
 			(error: AxiosError) => {
 				// 请求报错
-				Promise.reject(error);
+				return Promise.reject(error);
 			}
 		);
 
@@ -99,10 +101,6 @@ class RequestHttp {
 				}
 				if (!window.navigator.onLine) {
 					ElMessage.error('Network connection failed');
-					// 可以跳转到错误页面，也可以不做操作
-					// return router.replace({
-					//   path: '/404'
-					// });
 				}
 			}
 		);

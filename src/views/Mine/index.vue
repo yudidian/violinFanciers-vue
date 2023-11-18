@@ -26,17 +26,19 @@
 					<div v-if="likeList.length > 0" class="collection-list">
 						<div v-for="item in likeList" :key="item.articleId" class="list-item">
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover" :src="getImageUrl(item.baseImg)"></el-image>
+								<el-image style="width: 50px; height: 50px" fit="cover" :src="item.baseImg"></el-image>
 							</div>
 							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
-								<el-button type="danger" :icon="Star" @click="cancelCollection">Cancel</el-button>
+								<el-button type="danger" :icon="Star" @click="cancelCollection(item)">Cancel</el-button>
 							</div>
 						</div>
 						<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
 							<el-pagination
 								layout="prev, pager, next"
 								:total="listLikeTotal"
+								:current-page="likeListParams.current"
+								:page-size="likeListParams.size"
 								@current-change="likeListParams.current = $event"
 								@prev-click="likeListParams.current = $event"
 								@next-click="likeListParams.current = $event"
@@ -51,17 +53,19 @@
 					<div v-if="hideList.length > 0" class="collection-list">
 						<div v-for="item in hideList" :key="item.articleId" class="list-item">
 							<div class="left">
-								<el-image style="width: 50px; height: 50px" fit="cover" :src="getImageUrl(item.baseImg)"></el-image>
+								<el-image style="width: 50px; height: 50px" fit="cover" :src="item.baseImg"></el-image>
 							</div>
 							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
 							<div class="opt">
-								<el-button type="danger" :icon="View" @click="cancelHide">Hide</el-button>
+								<el-button type="danger" :icon="View" @click="cancelHide(item)">Hide</el-button>
 							</div>
 						</div>
 						<div style="display: flex; justify-content: center; width: 100%; margin-top: auto">
 							<el-pagination
 								layout="prev, pager, next"
 								:total="listHideTotal"
+								:current-page="hideListParams.current"
+								:page-size="hideListParams.size"
 								@current-change="hideListParams.current = $event"
 								@prev-click="hideListParams.current = $event"
 								@next-click="hideListParams.current = $event"
@@ -80,7 +84,7 @@
 						<div v-for="item in personalList" :key="item.articleId" class="list-item">
 							<div class="left">
 								<el-upload>
-									<el-image style="width: 50px; height: 50px" fit="cover" :src="getImageUrl(item.baseImg)"></el-image>
+									<el-image style="width: 50px; height: 50px" fit="cover" :src="item.baseImg"></el-image>
 								</el-upload>
 							</div>
 							<div class="title" @click="router.push({ name: 'PageDetail', query: { id: item.articleId } })">{{ item.title }}</div>
@@ -92,6 +96,8 @@
 							<el-pagination
 								layout="prev, pager, next"
 								:total="listPersonalTotal"
+								:current-page="personalListParams.current"
+								:page-size="personalListParams.size"
 								@current-change="personalListParams.current = $event"
 								@prev-click="personalListParams.current = $event"
 								@next-click="personalListParams.current = $event"
@@ -117,16 +123,16 @@
 						:on-success="handleAvatarSuccess"
 						:before-upload="beforeAvatarUpload"
 					>
-						<el-image v-if="imageUrl" :src="getImageUrl(imageUrl)" style="width: 200px; height: 200px" fit="cover" />
+						<el-image v-if="imageUrl" :src="imageUrl" style="width: 200px; height: 200px" fit="cover" />
 						<el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
 					</el-upload>
 				</el-form-item>
 				<el-form-item label="Article content" prop="message">
 					<el-input
 						v-model="formData.text"
-						:autosize="{ minRows: 8, maxRows: 16 }"
+						:autosize="{ minRows: 8, maxRows: 32 }"
 						type="textarea"
-						maxlength="800"
+						maxlength="1800"
 						placeholder="Please enter the content of the article"
 						show-word-limit
 					/>
@@ -147,7 +153,16 @@ import { defineComponent, ref, reactive, watch } from 'vue';
 import { View, Delete, Edit, Plus, Star } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox, FormRules, FormInstance } from 'element-plus';
 import type { UploadProps } from 'element-plus';
-import { getArticleByHide, getArticleByLike, insertArticle, selfArticle, getUserScore, deleteArticle } from '@/api/main.ts';
+import {
+	getArticleByHide,
+	getArticleByLike,
+	insertArticle,
+	selfArticle,
+	getUserScore,
+	deleteArticle,
+	deleteUserLike,
+	deleteUserHide,
+} from '@/api/main.ts';
 import useUserStore from '@/store/modules/user.ts';
 import { useRouter } from 'vue-router';
 interface RuleForm {
@@ -190,11 +205,11 @@ const formData = ref({
 const rules = reactive<FormRules<RuleForm>>({
 	title: [
 		{ required: true, message: 'Article title is required', trigger: 'blur' },
-		{ min: 3, max: 30, message: 'Length should be 3 to 30', trigger: 'blur' },
+		{ min: 3, max: 60, message: 'Length should be 3 to 30', trigger: 'blur' },
 	],
 	text: [
 		{ required: true, message: 'Article content is required', trigger: 'blur' },
-		{ max: 800, message: 'The maximum length of the article content is 800.', trigger: 'blur' },
+		{ max: 1800, message: 'The maximum length of the article content is 800.', trigger: 'blur' },
 	],
 });
 watch(likeListParams.value, () => {
@@ -207,7 +222,6 @@ watch(personalListParams.value, () => {
 	getPersonalList();
 });
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
-	console.log('--------', uploadFile);
 	imageUrl.value = URL.createObjectURL(uploadFile.raw!);
 	formData.value.baseImg = response.data;
 };
@@ -235,6 +249,7 @@ async function addNewArticleHandler() {
 				baseImg: '',
 				text: '',
 			};
+			imageUrl.value = '';
 			await getPersonalList();
 		} else {
 			console.log('error submit!', fields);
@@ -259,17 +274,27 @@ async function getPersonalList() {
 	userArticleSum.value = res.data.records.length;
 }
 
-function cancelHide() {
+function cancelHide(row: any) {
 	ElMessageBox.confirm('proxy will permanently delete the file. Continue?', 'Warning', {
 		confirmButtonText: 'OK',
 		cancelButtonText: 'Cancel',
 		type: 'warning',
 	})
-		.then(() => {
-			ElMessage({
-				type: 'success',
-				message: 'Delete completed',
-			});
+		.then(async () => {
+			console.log(user.userInfo.user_id);
+			try {
+				await deleteUserHide({
+					userId: user.userInfo.user_id,
+					articleId: row.articleId,
+				});
+				await getHideList();
+				ElMessage({
+					type: 'success',
+					message: 'Delete completed',
+				});
+			} catch (e) {
+				console.log(e);
+			}
 		})
 		.catch(() => {
 			ElMessage({
@@ -278,17 +303,26 @@ function cancelHide() {
 			});
 		});
 }
-function cancelCollection() {
+function cancelCollection(row: any) {
 	ElMessageBox.confirm('proxy will permanently delete the file. Continue?', 'Warning', {
 		confirmButtonText: 'OK',
 		cancelButtonText: 'Cancel',
 		type: 'warning',
 	})
-		.then(() => {
-			ElMessage({
-				type: 'success',
-				message: 'Delete completed',
-			});
+		.then(async () => {
+			try {
+				await deleteUserLike({
+					userId: user.userInfo.user_id,
+					articleId: row.articleId,
+				});
+				await getLikeList();
+				ElMessage({
+					type: 'success',
+					message: 'Delete completed',
+				});
+			} catch (e) {
+				console.log(e);
+			}
 		})
 		.catch(() => {
 			ElMessage({
@@ -327,13 +361,18 @@ async function cancelDelete(article_id: string) {
 		type: 'warning',
 	})
 		.then(async () => {
-			await deleteArticle({
-				article_id: article_id,
-			});
-			ElMessage({
-				type: 'success',
-				message: 'Delete completed',
-			});
+			try {
+				await deleteArticle({
+					article_id: article_id,
+				});
+				await getPersonalList();
+				ElMessage({
+					type: 'success',
+					message: 'Delete completed',
+				});
+			} catch (e) {
+				console.log(e);
+			}
 		})
 		.catch(() => {
 			ElMessage({
@@ -397,15 +436,17 @@ header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		padding: 10px 0;
 		.left {
 			width: 50px;
 			height: 50px;
 		}
 		.title {
-			flex: auto;
+			width: 800px;
 			margin-left: 20px;
 			font-size: 18px;
 			font-weight: bold;
+			cursor: pointer;
 			@include show_line(1);
 		}
 		.opt {
