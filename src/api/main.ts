@@ -71,6 +71,13 @@ export const getArticleByHide = (data: ListParams) => {
 		params: data,
 	});
 };
+export const getArticleByLikeAndOrder = (data: ListParams) => {
+	return request.axios({
+		url: '/violinlovers/article/getArticleByLikeAndOrder',
+		method: 'get',
+		params: data,
+	});
+};
 export const insertArticle = (data: Article) => {
 	return request.axios({
 		url: '/violinlovers/article/insertArticle',

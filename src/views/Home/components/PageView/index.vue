@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { getArticleByDateOrder, getArticleByLike } from '@/api/main.ts';
+import { getArticleByDateOrder, getArticleByLike, getArticleByLikeAndOrder } from '@/api/main.ts';
 
 const router = useRouter();
 const listDateTotal = ref(0);
@@ -117,7 +117,7 @@ async function getListByDate() {
 	listDateTotal.value = res.data.total * 1;
 }
 async function getListByLike() {
-	const res = await getArticleByLike(listParamsDate.value);
+	const res = await getArticleByLikeAndOrder(listParamsDate.value);
 	listByLike.value = res.data.records;
 	listLikeTotal.value = res.data.total;
 }
