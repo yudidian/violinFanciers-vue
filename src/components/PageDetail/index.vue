@@ -60,9 +60,6 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 const router = useRouter();
 const route = useRoute();
 const user = useUserStore();
-const listLike = JSON.parse(localStorage.getItem('listLike'));
-const listHide = JSON.parse(localStorage.getItem('listHide'));
-const listBelittle = JSON.parse(localStorage.getItem('listBelittle'));
 const isHideFlag = ref(false);
 const isLikeFlag = ref(false);
 const isBelittle = ref(false);
@@ -187,6 +184,9 @@ async function getArticleDetail() {
 	};
 }
 function initData() {
+	const listLike = JSON.parse(localStorage.getItem('listLike'));
+	const listHide = JSON.parse(localStorage.getItem('listHide'));
+	const listBelittle = JSON.parse(localStorage.getItem('listBelittle'));
 	isLikeFlag.value = listLike.findIndex((item: any) => item.articleId === route.query.id) !== -1;
 	isBelittle.value = listBelittle.findIndex((item: any) => item.articleId === route.query.id) !== -1;
 	console.log(listBelittle, route.query.id);
