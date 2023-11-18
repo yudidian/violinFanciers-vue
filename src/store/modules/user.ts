@@ -26,12 +26,6 @@ const useUserStore = defineStore('user', {
 		async userLogin(data) {
 			const res = await login(data);
 			// Store relevant lists for judgment
-			const listLike = await selectAllUserLike();
-			const listHide = await selectAllUserHide();
-			const listBelittle = await selectAllUserBelittle();
-			localStorage.setItem('listLike', JSON.stringify(listLike.data));
-			localStorage.setItem('listHide', JSON.stringify(listHide.data));
-			localStorage.setItem('listBelittle', JSON.stringify(listBelittle.data));
 			this.account = res.data.account;
 			this.token = res.data.token;
 			this.user_id = res.data.user_id;

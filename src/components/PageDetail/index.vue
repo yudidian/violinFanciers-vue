@@ -94,9 +94,7 @@ async function supportHandler() {
 					userId: user.userInfo.user_id,
 					articleId: route.query.id,
 				});
-				const listLike = await selectAllUserLike();
-				localStorage.setItem('listLike', JSON.stringify(listLike.data));
-				initData();
+				await initData();
 				ElMessage({
 					type: 'success',
 					message: 'Completed',
@@ -128,9 +126,7 @@ async function opposeHandler() {
 					userId: user.userInfo.user_id,
 					articleId: route.query.id,
 				});
-				const listBelittle = await selectAllUserBelittle();
-				localStorage.setItem('listBelittle', JSON.stringify(listBelittle.data));
-				initData();
+				await initData();
 				ElMessage({
 					type: 'success',
 					message: 'Completed',
@@ -155,9 +151,7 @@ async function hideHandler() {
 			articleId: route.query.id,
 		});
 		isHideFlag.value = false;
-		const listHide = await selectAllUserHide();
-		localStorage.setItem('listHide', JSON.stringify(listHide.data));
-		await getArticleDetail();
+		await initData();
 		ElMessage.success('Article unHide');
 	} else {
 		await insertUserHide({
@@ -184,15 +178,17 @@ async function getArticleDetail() {
 	};
 }
 // initialization data
-function initData() {
-	const listLike = JSON.parse(localStorage.getItem('listLike'));
-	const listHide = JSON.parse(localStorage.getItem('listHide'));
-	const listBelittle = JSON.parse(localStorage.getItem('listBelittle'));
+async function initData() {
+	const userListLike = await selectAllUserLike();
+	const userListHide = await selectAllUserHide();
+	const userListBelittle = await selectAllUserBelittle();
+	const listLike = userListLike.data ? userListLike.data : [];
+	const listBelittle = userListBelittle.data ? userListBelittle.data : [];
+	const listHide = userListHide.data ? userListHide.data : [];
 	isLikeFlag.value = listLike.findIndex((item: any) => item.articleId === route.query.id) !== -1;
 	isBelittle.value = listBelittle.findIndex((item: any) => item.articleId === route.query.id) !== -1;
-	console.log(listBelittle, route.query.id);
 	isHideFlag.value = listHide.findIndex((item: any) => item.articleId === route.query.id) !== -1;
-	getArticleDetail();
+	await getArticleDetail();
 }
 initData();
 </script>
